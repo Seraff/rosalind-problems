@@ -18,3 +18,20 @@ CODON_TABLE = { "UUU" => "F", "UUC" => "F", "UUA" => "L",
 def dna_to_prot(dna)
     dna.gsub(/\w{3}/, CODON_TABLE).split('Stop').first
 end
+
+def read_fasta(filename)
+    f = File.open(filename, 'r')
+    datasets = {}
+
+    current_dataset = nil
+    while string = f.gets
+      if string.match(/\A\>.+/)
+        current_dataset = string.gsub(/[\>\n]/, '')
+        datasets.merge!({current_dataset => ''})
+      else
+        datasets[current_dataset] += string.gsub("\n", "")
+      end
+    end
+    f.close()
+    datasets
+end
